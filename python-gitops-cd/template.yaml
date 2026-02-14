@@ -144,6 +144,7 @@ spec:
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: '/catalog-info.yaml'
+        optional: true
     
     - id: jira-comment
       name: Update JIRA Ticket
