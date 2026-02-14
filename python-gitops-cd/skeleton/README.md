@@ -18,13 +18,13 @@ GitOps repository para deploy automático via ArgoCD/Crossplane.
 
 ```
 ${{ values.repositoryName }}/
-├── charts/                          # Manifestos de deploy
-│   ├── {sigla}_app_{app1}.yaml     # APP 1
-│   ├── {sigla}_app_{app2}.yaml     # APP 2
+├── charts/                              # Manifestos de deploy
+│   ├── values-{sigla}-{app1}.yaml      # APP 1
+│   ├── values-{sigla}-{app2}.yaml      # APP 2
 │   └── README.md
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml               # Deploy automático
+│       └── deploy.yml                   # Deploy automático
 └── README.md
 ```
 
@@ -36,7 +36,7 @@ ${{ values.repositoryName }}/
 # Workflow CI da aplicação
 git clone ${{ values.repositoryName }}
 git checkout develop  # ou release/master
-echo "manifest YAML" > charts/{sigla}_app_{nome}.yaml
+echo "manifest YAML" > charts/values-{sigla}-{nome}.yaml
 git commit -m "deploy: {app} version {tag}"
 git push
 ```

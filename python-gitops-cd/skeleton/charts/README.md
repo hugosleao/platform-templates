@@ -8,10 +8,12 @@ Cada aplicação que usa este GitOps criará seu próprio arquivo YAML aqui:
 
 ```
 charts/
-├── {sigla}_app_{nome-app1}.yaml
-├── {sigla}_app_{nome-app2}.yaml
-└── {sigla}_app_{nome-app3}.yaml
+├── values-{sigla}-{nome-app1}.yaml
+├── values-{sigla}-{nome-app2}.yaml
+└── values-{sigla}-{nome-app3}.yaml
 ```
+
+**Formato obrigatório**: `values-{sigla}-{nome-app}.yaml`
 
 ## Formato do YAML
 
