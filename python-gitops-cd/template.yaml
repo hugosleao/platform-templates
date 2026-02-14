@@ -62,13 +62,13 @@ spec:
         - environments
       properties:
         repositoryPreview:
-          title: 🎯 REPOSITÓRIO QUE SERÁ CRIADO
+          title: "REPOSITORIO QUE SERA CRIADO"
           type: string
           description: Nome gerado automaticamente baseado nos campos acima
           ui:readonly: true
-          ui:help: Formato [sigla]_cd_gitops-[plataforma]
+          ui:help: "Formato: [sigla]_cd_gitops-[plataforma]"
           default: ""
-          ui:placeholder: Exemplo XPTO + lbd = xpto_cd_gitops-lbd
+          ui:placeholder: "Exemplo: XPTO + lbd = xpto_cd_gitops-lbd"
         
         environments:
           title: Ambientes AWS

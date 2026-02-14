@@ -55,13 +55,13 @@ spec:
         - environments
       properties:
         repositoryPreview:
-          title: 🎯 REPOSITÓRIO APP QUE SERÁ CRIADO
+          title: "REPOSITORIO APP QUE SERA CRIADO"
           type: string
           description: Nome gerado automaticamente
           ui:readonly: true
-          ui:help: Formato [sigla]_app_[nome-app]
+          ui:help: "Formato: [sigla]_app_[nome-app]"
           default: ""
-          ui:placeholder: Exemplo XPTO + minha-api = xpto_app_minha-api
+          ui:placeholder: "Exemplo: XPTO + minha-api = xpto_app_minha-api"
         
         gitopsRepo:
           title: Repositório GitOps (CD) - Criado Previamente
