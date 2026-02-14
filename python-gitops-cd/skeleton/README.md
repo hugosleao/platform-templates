@@ -63,9 +63,9 @@ Cada branch representa um ambiente:
 
 | Branch   | Ambiente | Account ID (exemplo)      |
 |----------|----------|---------------------------|
-| develop  | DEV      | ${{ values.environments | select('equalto', 'dev') | list | length > 0 ? '259175803102' : 'N/A' }} |
-| release  | HML      | ${{ values.environments | select('equalto', 'hml') | list | length > 0 ? '493385093101' : 'N/A' }} |
-| master   | PRD      | ${{ values.environments | select('equalto', 'prd') | list | length > 0 ? '924146895830' : 'N/A' }} |
+| develop  | DEV      | 259175803102              |
+| release  | HML      | 493385093101              |
+| master   | PRD      | 924146895830              |
 
 **Importante**: Cada branch tem seus próprios YAMLs. Não fazer merge entre branches!
 
