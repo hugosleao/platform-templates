@@ -1,4 +1,4 @@
-name: Deploy {%- if values.platform == 'lbd' %} Lambda{% else %} Application{% endif %}
+name: Deploy{%- if values.platform == 'lbd' %} Lambda{% else %} Application{% endif %}
 
 on:
   push:
@@ -18,8 +18,8 @@ jobs:
   detectar-arquivos:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.detectar.outputs.matrix }}
-      has-files: ${{ steps.detectar.outputs.has-yaml-files }}
+      matrix: {% raw %}${{ steps.detectar.outputs.matrix }}{% endraw %}
+      has-files: {% raw %}${{ steps.detectar.outputs.has-yaml-files }}{% endraw %}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,7 +29,7 @@ jobs:
       - name: Detectar arquivos YAML modificados
         id: detectar
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'charts/.*\.ya\?ml$' || true)
+          CHANGED_FILES=$(git diff --name-only {% raw %}${{ github.event.before }} ${{ github.sha }}{% endraw %} | grep 'charts/.*\.ya\?ml$' || true)
           if [ -z "$CHANGED_FILES" ]; then
             echo "has-yaml-files=false" >> $GITHUB_OUTPUT
             echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
@@ -44,7 +44,7 @@ jobs:
     needs: detectar-arquivos
     if: needs.detectar-arquivos.outputs.has-files == 'true'
     strategy:
-      matrix: ${{ fromJson(needs.detectar-arquivos.outputs.matrix) }}
+      matrix: {% raw %}${{ fromJson(needs.detectar-arquivos.outputs.matrix) }}{% endraw %}
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -54,19 +54,19 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: {% raw %}${{ secrets.AWS_ROLE_ARN }}{% endraw %}
           aws-region: us-east-1
 
       - name: Deploy Lambda via Crossplane
         run: |
-          echo "🚀 Deploying Lambda from ${{ matrix.file }}"
-          kubectl apply -f ${{ matrix.file }}
+          echo "Deploying Lambda from {% raw %}${{ matrix.file }}{% endraw %}"
+          kubectl apply -f {% raw %}${{ matrix.file }}{% endraw %}
 {%- else %}
   deploy-k8s:
     needs: detectar-arquivos
     if: needs.detectar-arquivos.outputs.has-files == 'true'
     strategy:
-      matrix: ${{ fromJson(needs.detectar-arquivos.outputs.matrix) }}
+      matrix: {% raw %}${{ fromJson(needs.detectar-arquivos.outputs.matrix) }}{% endraw %}
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -78,6 +78,6 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          echo "🚀 Deploying app from ${{ matrix.file }}"
-          kubectl apply -f ${{ matrix.file }}
+          echo "Deploying app from {% raw %}${{ matrix.file }}{% endraw %}"
+          kubectl apply -f {% raw %}${{ matrix.file }}{% endraw %}
 {%- endif %}
