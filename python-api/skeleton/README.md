@@ -1,11 +1,12 @@
-# ${{ values.appName }}
+# ${{ values.repositoryName }}
 
 ${{ values.description }}
 
 ## 🏗️ Arquitetura
 
 - **Sigla**: `${{ values.sigla }}`
-- **Tipo**: `${{ values.tipo }}`
+- **Tipo Repo**: `${{ values.repoType }}` (APP/QA/CD)
+- **Pipeline**: `${{ values.tipo }}`
 - **Owner**: `${{ values.owner }}`
 - **JIRA**: [${{ values.jiraTicket }}](https://devopstia.atlassian.net/browse/${{ values.jiraTicket }})
 

@@ -1,10 +1,10 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ values.sigla | lower }}-${{ values.tipo | lower | replace(' ', '-') }}-${{ values.appName }}
+  name: ${{ values.repositoryName }}
   description: ${{ values.description }}
   annotations:
-    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
+    github.com/project-slug: ${{ values.destination.owner }}/${{ values.repositoryName }}
     backstage.io/techdocs-ref: dir:.
     argocd/app-name: ${{ values.sigla | lower }}-${{ values.appName }}
     jira/project-key: ${{ values.jiraTicket | replace('-.*', '') }}
@@ -12,8 +12,9 @@ metadata:
     - python
     - fastapi
     - ${{ values.sigla | lower }}
+    - ${{ values.repoType }}
   links:
-    - url: https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}
+    - url: https://github.com/${{ values.destination.owner }}/${{ values.repositoryName }}
       title: GitHub Repository
       icon: github
     - url: https://argocd.devopstia.com/applications/${{ values.sigla | lower }}-${{ values.appName }}

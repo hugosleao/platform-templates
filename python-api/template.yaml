@@ -64,8 +64,24 @@ spec:
     
     - title: Configuração do Repositório
       required:
+        - repoType
         - repoUrl
       properties:
+        repoType:
+          title: Tipo de Repositório
+          type: string
+          description: Classificação do repositório
+          default: app
+          enum:
+            - app
+            - qa
+            - cd
+          enumNames:
+            - APP - Aplicação
+            - QA - Testes de Qualidade
+            - CD - GitOps (Deploy)
+          ui:help: Define o sufixo do nome do repo
+        
         repoUrl:
           title: Repository Location
           type: string
@@ -75,6 +91,8 @@ spec:
               - github.com
             allowedOwners:
               - hugosleao
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
     
     - title: JIRA Integration
       required:
@@ -96,6 +114,8 @@ spec:
         values:
           sigla: ${{ parameters.sigla }}
           appName: ${{ parameters.appName }}
+          repoType: ${{ parameters.repoType }}
+          repositoryName: ${{ parameters.sigla | lower }}_${{ parameters.repoType }}_${{ parameters.appName }}
           tipo: ${{ parameters.tipo }}
           description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
