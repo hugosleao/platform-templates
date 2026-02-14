@@ -61,6 +61,15 @@ spec:
       required:
         - environments
       properties:
+        repositoryPreview:
+          title: 🎯 REPOSITÓRIO QUE SERÁ CRIADO
+          type: string
+          description: Nome gerado automaticamente baseado nos campos acima
+          ui:readonly: true
+          ui:help: Formato [sigla]_cd_gitops-[plataforma]
+          default: ""
+          ui:placeholder: Exemplo XPTO + lbd = xpto_cd_gitops-lbd
+        
         environments:
           title: Ambientes AWS
           type: array
@@ -74,14 +83,6 @@ spec:
               - hml
               - prd
           default: ['dev']
-        
-        repositoryPreview:
-          title: 📦 Repositório que será criado
-          type: string
-          description: Gerado automaticamente
-          ui:readonly: true
-          ui:help: Formato [sigla]_cd_gitops-[plataforma] (ex XPTO + lbd → xpto_cd_gitops-lbd)
-          default: Preencha os campos acima para visualizar
     
     - title: Configuração GitHub
       properties:

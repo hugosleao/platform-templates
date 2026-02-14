@@ -54,20 +54,32 @@ spec:
         - gitopsRepo
         - environments
       properties:
-        gitopsRepo:
-          title: Repositório GitOps (CD)
-          type: string
-          description: Nome do repositório CD criado previamente
-          pattern: '^[a-z0-9_-]+_cd_gitops-[a-z0-9]+$'
-          ui:help: Formato {sigla}_cd_gitops-{plataforma} (ex xpto_cd_gitops-lbd)
-        
         repositoryPreview:
-          title: 📦 Repositório APP que será criado
+          title: 🎯 REPOSITÓRIO APP QUE SERÁ CRIADO
           type: string
-          description: Baseado nos campos acima
+          description: Nome gerado automaticamente
           ui:readonly: true
-          ui:help: Será criado como [SIGLA]_app_[NOME-APP] (ex XPTO + teste-api → xpto_app_teste-api)
-          default: Preencha os campos acima para visualizar
+          ui:help: Formato [sigla]_app_[nome-app]
+          default: ""
+          ui:placeholder: Exemplo XPTO + minha-api = xpto_app_minha-api
+        
+        gitopsRepo:
+          title: Repositório GitOps (CD) - Criado Previamente
+          type: string
+          description: Selecione o repo CD da sua sigla/plataforma
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              - kind: Component
+                spec.type: gitops
+            defaultKind: Component
+        
+        gitopsRepoManual:
+          title: ⚠️ Ou digite manualmente (se não aparecer acima)
+          type: string
+          description: Formato {sigla}_cd_gitops-{plataforma}
+          pattern: '^[a-z0-9_-]*_cd_gitops-[a-z0-9]+$'
+          ui:help: Ex xpto_cd_gitops-lbd (use apenas se seletor acima falhar)
         
         environments:
           title: Ambientes para Deploy
@@ -116,7 +128,7 @@ spec:
           sigla: ${{ parameters.sigla }}
           appName: ${{ parameters.appName }}
           repositoryName: ${{ parameters.sigla | lower }}_app_${{ parameters.appName }}
-          gitopsRepo: ${{ parameters.gitopsRepo }}
+          gitopsRepo: ${{ parameters.gitopsRepo or parameters.gitopsRepoManual }}
           environments: ${{ parameters.environments }}
           description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
