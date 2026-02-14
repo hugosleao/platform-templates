@@ -37,7 +37,7 @@ ${{ values.appName }}/
 ### Branches
 - `develop` → Deploy DEV
 - `release` → Deploy HML
-- `main` → Deploy PRD
+- `master` → Deploy PRD
 
 ### Fluxo CI/CD
 1. **Push** → GitHub Actions (CI)
@@ -52,9 +52,10 @@ Ambientes configurados:
 - **{{ env | upper }}**: Account ID definido no GitOps
 {%- endfor %}
 
-- `develop` → Ambiente de Desenvolvimento (DEV)
-- `release` → Ambiente de Homologação (HML)
-- `main` → Ambiente de Produção (PRD)
+**Mapeamento branch → ambiente:**
+- `develop` → DEV
+- `release` → HML
+- `master` → PRD
 
 ## 🛠️ Desenvolvimento Local
 

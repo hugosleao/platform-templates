@@ -132,7 +132,7 @@ spec:
         description: ${{ parameters.description }}
         repoUrl: ${{ parameters.repoUrl }}
         repoVisibility: private
-        defaultBranch: main
+        defaultBranch: master
         protectDefaultBranch: false
         deleteBranchOnMerge: true
         gitAuthorName: Backstage

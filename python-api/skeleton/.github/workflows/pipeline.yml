@@ -5,12 +5,12 @@ on:
     branches:
       - develop
       - release
-      - main
+      - master
   pull_request:
     branches:
       - develop
       - release
-      - main
+      - master
 
 env:
   SIGLA: ${{ values.sigla }}

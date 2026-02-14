@@ -1,0 +1,45 @@
+name: Create GitFlow Branches
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+jobs:
+  create-branches:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.TOKEN_SVC_ACTIONS || github.token }}
+      
+      - name: Create release branch
+        run: |
+          if ! git ls-remote --heads origin release | grep release; then
+            git checkout -b release
+            git push origin release
+            echo "✅ Branch release criada"
+          else
+            echo "ℹ️ Branch release já existe"
+          fi
+      
+      - name: Create master branch
+        run: |
+          if ! git ls-remote --heads origin master | grep master; then
+            git checkout -b master
+            git push origin master
+            echo "✅ Branch master criada"
+          else
+            echo "ℹ️ Branch master já existe"
+          fi
+      
+      - name: Branch Protection (opcional)
+        run: |
+          echo "💡 Configure branch protection via GitHub UI:"
+          echo "   - develop: require PR reviews"
+          echo "   - release: require PR from develop"
+          echo "   - master: require PR from release"

@@ -139,6 +139,14 @@ spec:
         deleteBranchOnMerge: true
         gitAuthorName: Backstage
         gitAuthorEmail: backstage@devopstia.com
+    
+    - id: create-branches
+      name: Create GitFlow Branches
+      action: github:actions:dispatch
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        workflowId: create-branches.yml
+        branchOrTagName: develop
 
     - id: create-secrets
       name: Create GitHub Secrets
