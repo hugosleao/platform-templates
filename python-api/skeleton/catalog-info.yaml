@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ values.appName }}
+  name: ${{ values.sigla | lower }}-${{ values.tipo | lower | replace(' ', '-') }}-${{ values.appName }}
   description: ${{ values.description }}
   annotations:
     github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
