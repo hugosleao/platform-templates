@@ -2,13 +2,21 @@
 
 GitOps repository com Helm charts para deploy via ArgoCD.
 
+## 🏗️ Informações
+
+- **Sigla**: `${{ values.sigla }}`
+- **Plataforma**: `${{ values.platform }}` (${{ values.platform == 'lbd' ? 'AWS Lambda' : (values.platform == 'eks' ? 'AWS EKS' : 'Azure AKS') }})
+- **Ambientes**: ${{ values.environments | join(', ') }}
+- **Owner**: `${{ values.owner }}`
+- **JIRA**: [${{ values.jiraTicket }}](https://devopstia.atlassian.net/browse/${{ values.jiraTicket }})
+
 ## 📦 Estrutura
 
 ```
 helm/
 ├── Chart.yaml          # Metadata do chart
-├── values.yaml         # Valores base (template)
-└── templates/          # (criado pelo workflow CI)
+├── values.yaml         # Valores base por plataforma
+└── templates/          # (criado pelo workflow CI das apps)
 
 environments/
 ├── values-dev.yaml     # DEV environment
@@ -16,18 +24,10 @@ environments/
 └── values-prd.yaml     # PRD environment (se aplicável)
 ```
 
-## 🏗️ Informações
-
-- **Sigla**: `${{ values.sigla }}`
-- **App**: `${{ values.appName }}`
-- **Ambientes**: ${{ values.environments | join(', ') }}
-- **Owner**: `${{ values.owner }}`
-- **JIRA**: [${{ values.jiraTicket }}](https://devopstia.atlassian.net/browse/${{ values.jiraTicket }})
-
 ## 🔄 Fluxo GitOps
 
 1. **CI (APP)**: Workflow da aplicação faz commit aqui após build
-2. **ArgoCD**: Sincroniza automaticamente com cluster EKS
+2. **ArgoCD**: Sincroniza automaticamente com {%- if values.platform == 'lbd' %}AWS Lambda{% else %}cluster Kubernetes{% endif %}
 3. **Deploy**: Rollout automático por ambiente (dev → hml → prd)
 
 ## 📝 Como Atualizar
@@ -39,9 +39,13 @@ accountId: "259175803102"  # Seu Account ID real
 ```
 
 **Recursos:**
-Ajuste limites de CPU/Memory conforme necessidade.
+{%- if values.platform == 'lbd' %}
+Ajuste `lambda.memory` e `lambda.timeout` conforme necessidade.
+{%- else %}
+Ajuste limites de CPU/Memory e `replicas` conforme necessidade.
+{%- endif %}
 
 ## 🔗 Links
 
-- [ArgoCD Dashboard](https://argocd.devopstia.com/applications/${{ values.sigla | lower }}-${{ values.appName }})
+- [ArgoCD Dashboard](https://argocd.devopstia.com/applications/${{ values.sigla | lower }}-gitops-${{ values.platform }})
 - [JIRA Ticket](https://devopstia.atlassian.net/browse/${{ values.jiraTicket }})

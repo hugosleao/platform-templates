@@ -6,18 +6,19 @@ metadata:
   annotations:
     github.com/project-slug: ${{ values.destination.owner }}/${{ values.repositoryName }}
     backstage.io/techdocs-ref: dir:.
-    argocd/app-name: ${{ values.sigla | lower }}-${{ values.appName }}
+    platform/type: ${{ values.platform }}
     jira/project-key: ${{ values.jiraTicket | replace('-.*', '') }}
   tags:
     - gitops
     - helm
     - argocd
+    - ${{ values.platform }}
     - ${{ values.sigla | lower }}
   links:
     - url: https://github.com/${{ values.destination.owner }}/${{ values.repositoryName }}
       title: GitHub Repository
       icon: github
-    - url: https://argocd.devopstia.com/applications/${{ values.sigla | lower }}-${{ values.appName }}
+    - url: https://argocd.devopstia.com/applications/${{ values.sigla | lower }}-gitops-${{ values.platform }}
       title: ArgoCD Application
       icon: dashboard
     - url: https://devopstia.atlassian.net/browse/${{ values.jiraTicket }}

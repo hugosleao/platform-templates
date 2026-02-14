@@ -1,16 +1,26 @@
 # Ambiente: {{ .Values.environment }}
 # Account ID: {{ .Values.accountId }}
 # Region: {{ .Values.region }}
+# Platform: ${{ values.platform }}
 
 app:
-  name: ${{ values.sigla | lower }}-${{ values.appName }}
+  name: ${{ values.sigla | lower }}-gitops-${{ values.platform }}
   version: {{ .Values.version | default "0.1.0" }}
+  platform: ${{ values.platform }}
   
 image:
-  repository: ghcr.io/${{ values.destination.owner }}/${{ values.sigla | lower }}_app_${{ values.appName }}
+  repository: ghcr.io/${{ values.destination.owner }}/{{ .Values.appImage | default "app-name" }}
   tag: {{ .Values.imageTag | default "latest" }}
   pullPolicy: IfNotPresent
 
+{%- if values.platform == 'lbd' %}
+# Lambda Configuration (via Crossplane)
+lambda:
+  memory: {{ .Values.lambda.memory | default 512 }}
+  timeout: {{ .Values.lambda.timeout | default 30 }}
+  runtime: python3.12
+{%- else %}
+# Kubernetes Configuration
 replicas: {{ .Values.replicas | default 2 }}
 
 resources:
@@ -28,9 +38,12 @@ service:
 ingress:
   enabled: {{ .Values.ingress.enabled | default false }}
   host: {{ .Values.ingress.host | default "" }}
+{%- endif %}
 
 env:
   - name: ENVIRONMENT
     value: {{ .Values.environment }}
   - name: AWS_REGION
     value: {{ .Values.region }}
+  - name: PLATFORM
+    value: ${{ values.platform }}

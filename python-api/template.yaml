@@ -58,8 +58,8 @@ spec:
           title: Repositório GitOps (CD)
           type: string
           description: Nome do repositório CD criado previamente
-          pattern: '^[a-z0-9_-]+_cd_[a-z0-9-]+$'
-          ui:help: Formato esperado {sigla}_cd_{appName} (ex xpto_cd_gitops-lbd)
+          pattern: '^[a-z0-9_-]+_cd_gitops-[a-z0-9]+$'
+          ui:help: Formato {sigla}_cd_gitops-{plataforma} (ex xpto_cd_gitops-lbd)
         
         repositoryPreview:
           title: 📦 Repositório APP que será criado

@@ -17,7 +17,7 @@ spec:
     - title: Informações do GitOps
       required:
         - sigla
-        - appName
+        - platform
         - owner
       properties:
         sigla:
@@ -26,19 +26,27 @@ spec:
           description: Sigla única da aplicação
           pattern: '^[A-Z]{3,6}$'
           ui:autofocus: true
-          ui:help: Máximo 6 caracteres maiúsculos
+          ui:help: Máximo 6 caracteres maiúsculos (ex XPTO, DVSP)
         
-        appName:
-          title: Nome da Aplicação
+        platform:
+          title: Plataforma de Deploy
           type: string
-          description: Nome completo da aplicação sem sufixo de ambiente
-          pattern: '^(?!.*-(dev|hml|ppr|prd)$)[a-z][a-z0-9-]*$'
-          ui:help: Proibido terminar com -dev, -hml, -ppr ou -prd
+          description: Onde a aplicação será executada
+          default: lbd
+          enum:
+            - lbd
+            - eks
+            - k8s
+          enumNames:
+            - Lambda (AWS)
+            - EKS (AWS Kubernetes)
+            - AKS (Azure Kubernetes)
+          ui:help: Define a infraestrutura de destino
         
         description:
           title: Descrição
           type: string
-          description: Descrição breve do projeto
+          description: Descrição breve do projeto GitOps
         
         owner:
           title: Owner
@@ -70,9 +78,9 @@ spec:
         repositoryPreview:
           title: 📦 Repositório que será criado
           type: string
-          description: Baseado nos campos acima
+          description: Gerado automaticamente
           ui:readonly: true
-          ui:help: Será criado como [SIGLA]_cd_[NOME-APP] (ex XPTO_cd_gitops-lbd → xpto_cd_gitops-lbd)
+          ui:help: Formato [sigla]_cd_gitops-[plataforma] (ex XPTO + lbd → xpto_cd_gitops-lbd)
           default: Preencha os campos acima para visualizar
     
     - title: Configuração GitHub
@@ -108,8 +116,8 @@ spec:
         url: ./skeleton
         values:
           sigla: ${{ parameters.sigla }}
-          appName: ${{ parameters.appName }}
-          repositoryName: ${{ parameters.sigla | lower }}_cd_${{ parameters.appName }}
+          platform: ${{ parameters.platform }}
+          repositoryName: ${{ parameters.sigla | lower }}_cd_gitops-${{ parameters.platform }}
           description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
           environments: ${{ parameters.environments }}
