@@ -84,18 +84,16 @@ spec:
           default: ['dev']
     
     - title: Configuração GitHub
-      required:
-        - repoUrl
       properties:
-        repoUrl:
-          title: Repository Location
+        githubOrg:
+          title: Organização GitHub
           type: string
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - github.com
-            allowedOwners:
-              - hugosleao
+          description: Organização onde o repo será criado
+          default: hugosleao
+          enum:
+            - hugosleao
+          ui:readonly: true
+          ui:help: Organização fixa da plataforma
     
     - title: JIRA Integration
       required:
@@ -122,9 +120,10 @@ spec:
           environments: ${{ parameters.environments }}
           description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
-          repoUrl: ${{ parameters.repoUrl }}
           jiraTicket: ${{ parameters.jiraTicket }}
-          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          destination:
+            owner: ${{ parameters.githubOrg }}
+            repo: ${{ parameters.sigla | lower }}_app_${{ parameters.appName }}
 
     - id: publish
       name: Publish to GitHub
@@ -132,7 +131,7 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: ${{ parameters.description }}
-        repoUrl: ${{ parameters.repoUrl }}
+        repoUrl: github.com?owner=${{ parameters.githubOrg }}&repo=${{ parameters.sigla | lower }}_app_${{ parameters.appName }}
         repoVisibility: private
         defaultBranch: develop
         protectDefaultBranch: false
