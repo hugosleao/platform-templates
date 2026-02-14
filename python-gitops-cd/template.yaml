@@ -162,13 +162,13 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "✅ Repositório GitOps criado com sucesso!\n\n"
+                    text: "Repositorio GitOps criado com sucesso!\n\n"
                     marks:
                       - type: strong
               - type: paragraph
                 content:
                   - type: text
-                    text: "📦 Repositório: "
+                    text: "Repositorio: "
                   - type: text
                     text: "${{ parameters.sigla | lower }}_cd_gitops-${{ parameters.platform }}"
                     marks:
@@ -176,7 +176,7 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🔗 URL: "
+                    text: "URL: "
                   - type: text
                     text: "${{ steps.publish.output.remoteUrl }}"
                     marks:
@@ -186,19 +186,19 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🚀 Plataforma: ${{ parameters.platform | upper }}"
+                    text: "Plataforma: ${{ parameters.platform | upper }}"
                     marks:
                       - type: strong
               - type: paragraph
                 content:
                   - type: text
-                    text: "🌍 Ambientes configurados: "
+                    text: "Ambientes configurados: "
                   - type: text
                     text: "${{ parameters.environments | join(', ') | upper }}"
               - type: paragraph
                 content:
                   - type: text
-                    text: "\n📝 Próximo passo: Criar aplicações usando o template 'Python FastAPI Application' e referenciar este repo GitOps."
+                    text: "\nProximo passo: Criar aplicacoes usando o template Python FastAPI Application e referenciar este repo GitOps."
                     marks:
                       - type: em
     
@@ -222,5 +222,5 @@ spec:
       - title: Open in Catalog
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
-      - title: JIRA Ticket (✅ Closed)
+      - title: JIRA Ticket (Closed)
         url: https://devopstia.atlassian.net/browse/${{ parameters.jiraTicket }}

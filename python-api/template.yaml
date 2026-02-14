@@ -192,13 +192,13 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🎉 Aplicação criada com sucesso!\n\n"
+                    text: "Aplicacao criada com sucesso!\n\n"
                     marks:
                       - type: strong
               - type: paragraph
                 content:
                   - type: text
-                    text: "📦 Repositório: "
+                    text: "Repositorio: "
                   - type: text
                     text: "${{ parameters.sigla | lower }}_app_${{ parameters.appName }}"
                     marks:
@@ -206,7 +206,7 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🔗 URL: "
+                    text: "URL: "
                   - type: text
                     text: "${{ steps.publish.output.remoteUrl }}"
                     marks:
@@ -216,7 +216,7 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🚀 GitOps CD: "
+                    text: "GitOps CD: "
                   - type: text
                     text: "${{ parameters.gitopsRepo or parameters.gitopsRepoManual }}"
                     marks:
@@ -224,13 +224,13 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🌍 Ambientes: "
+                    text: "Ambientes: "
                   - type: text
                     text: "${{ parameters.environments | join(', ') | upper }}"
               - type: paragraph
                 content:
                   - type: text
-                    text: "\n📝 Próximo passo: Faça commit na branch 'develop' para iniciar o pipeline CI/CD. O deploy será automático via GitOps!"
+                    text: "\nProximo passo: Faca commit na branch develop para iniciar o pipeline CI/CD. O deploy sera automatico via GitOps!"
                     marks:
                       - type: em
     
@@ -254,5 +254,5 @@ spec:
       - title: Open in Catalog
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
-      - title: JIRA Ticket (✅ Closed)
+      - title: JIRA Ticket (Closed)
         url: https://devopstia.atlassian.net/browse/${{ parameters.jiraTicket }}
