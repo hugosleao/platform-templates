@@ -33,8 +33,8 @@ spec:
           title: Nome da Aplicação
           type: string
           description: Nome completo da aplicação
-          pattern: '^[a-z][a-z0-9-]*$'
-          ui:help: Apenas letras minúsculas, números e hífens
+          pattern: '^[a-z][a-z0-9-]*(?<!-dev)(?<!-hml)(?<!-ppr)(?<!-prd)$'
+          ui:help: Sem sufixo de ambiente (-dev, -hml, -prd)
         
         tipo:
           title: Tipo de Pipeline
