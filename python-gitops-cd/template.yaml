@@ -186,9 +186,7 @@ spec:
               - type: paragraph
                 content:
                   - type: text
-                    text: "🚀 Plataforma: "
-                  - type: text
-                    text: "{%- if parameters.platform == 'lbd' %}AWS Lambda{% elif parameters.platform == 'eks' %}AWS EKS{% else %}Azure AKS{% endif %}"
+                    text: "🚀 Plataforma: ${{ parameters.platform | upper }}"
                     marks:
                       - type: strong
               - type: paragraph
