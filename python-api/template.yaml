@@ -24,17 +24,17 @@ spec:
         sigla:
           title: Sigla da Aplicação
           type: string
-          description: Sigla única da aplicação (ex: DVSP, CORE, PAGTO)
+          description: Sigla única da aplicação
           pattern: '^[A-Z]{3,6}$'
           ui:autofocus: true
-          ui:help: 'Máximo 6 caracteres maiúsculos'
+          ui:help: Máximo 6 caracteres maiúsculos
         
         appName:
           title: Nome da Aplicação
           type: string
-          description: Nome completo da aplicação (ex: payment-service, user-api)
+          description: Nome completo da aplicação
           pattern: '^[a-z][a-z0-9-]*$'
-          ui:help: 'Apenas letras minúsculas, números e hífens'
+          ui:help: Apenas letras minúsculas, números e hífens
         
         tipo:
           title: Tipo de Pipeline
@@ -45,8 +45,8 @@ spec:
             - GitOps
             - Aplicação de Teste
           enumNames:
-            - 'GitOps (Deploy via ArgoCD)'
-            - 'Aplicação de Teste (Somente CI)'
+            - GitOps (Deploy via ArgoCD)
+            - Aplicação de Teste (Somente CI)
         
         description:
           title: Descrição
@@ -83,9 +83,9 @@ spec:
         jiraTicket:
           title: Número do Ticket JIRA
           type: string
-          description: Ticket JIRA que solicitou esta aplicação (ex: DEVOPS-123)
+          description: Ticket JIRA que solicitou esta aplicação
           pattern: '^[A-Z]+-[0-9]+$'
-          ui:help: 'Formato: PROJETO-NUMERO'
+          ui:help: Formato PROJETO-NUMERO
 
   steps:
     - id: fetch-base
