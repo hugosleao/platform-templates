@@ -1,0 +1,83 @@
+name: Deploy {%- if values.platform == 'lbd' %} Lambda{% else %} Application{% endif %}
+
+on:
+  push:
+    branches:
+      - develop
+      - release
+      - master
+    paths:
+      - 'charts/**/*.yml'
+      - 'charts/**/*.yaml'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  detectar-arquivos:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.detectar.outputs.matrix }}
+      has-files: ${{ steps.detectar.outputs.has-yaml-files }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Detectar arquivos YAML modificados
+        id: detectar
+        run: |
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'charts/.*\.ya\?ml$' || true)
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "has-yaml-files=false" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+          else
+            echo "has-yaml-files=true" >> $GITHUB_OUTPUT
+            MATRIX_JSON=$(echo "$CHANGED_FILES" | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({file: .}) | {include: .}')
+            echo "matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
+          fi
+
+{%- if values.platform == 'lbd' %}
+  deploy-lambda:
+    needs: detectar-arquivos
+    if: needs.detectar-arquivos.outputs.has-files == 'true'
+    strategy:
+      matrix: ${{ fromJson(needs.detectar-arquivos.outputs.matrix) }}
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Deploy Lambda via Crossplane
+        run: |
+          echo "🚀 Deploying Lambda from ${{ matrix.file }}"
+          kubectl apply -f ${{ matrix.file }}
+{%- else %}
+  deploy-k8s:
+    needs: detectar-arquivos
+    if: needs.detectar-arquivos.outputs.has-files == 'true'
+    strategy:
+      matrix: ${{ fromJson(needs.detectar-arquivos.outputs.matrix) }}
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Deploy to Kubernetes
+        run: |
+          echo "🚀 Deploying app from ${{ matrix.file }}"
+          kubectl apply -f ${{ matrix.file }}
+{%- endif %}
