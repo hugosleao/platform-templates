@@ -5,7 +5,11 @@ GitOps repository com Helm charts para deploy via ArgoCD.
 ## 🏗️ Informações
 
 - **Sigla**: `${{ values.sigla }}`
-- **Plataforma**: `${{ values.platform }}` (${{ values.platform == 'lbd' ? 'AWS Lambda' : (values.platform == 'eks' ? 'AWS EKS' : 'Azure AKS') }})
+- **Plataforma**: `${{ values.platform }}`
+{%- if values.platform == 'lbd' %} (AWS Lambda)
+{%- elif values.platform == 'eks' %} (AWS EKS)
+{%- else %} (Azure AKS)
+{%- endif %}
 - **Ambientes**: ${{ values.environments | join(', ') }}
 - **Owner**: `${{ values.owner }}`
 - **JIRA**: [${{ values.jiraTicket }}](https://devopstia.atlassian.net/browse/${{ values.jiraTicket }})
