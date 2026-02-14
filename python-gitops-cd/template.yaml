@@ -144,6 +144,78 @@ spec:
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: '/catalog-info.yaml'
+    
+    - id: jira-comment
+      name: Update JIRA Ticket
+      action: http:backstage:request
+      input:
+        method: POST
+        url: https://devopstia.atlassian.net/rest/api/3/issue/${{ parameters.jiraTicket }}/comment
+        headers:
+          Authorization: Basic ${{ secrets.JIRA_AUTH_TOKEN }}
+          Content-Type: application/json
+        body:
+          body:
+            type: doc
+            version: 1
+            content:
+              - type: paragraph
+                content:
+                  - type: text
+                    text: "✅ Repositório GitOps criado com sucesso!\n\n"
+                    marks:
+                      - type: strong
+              - type: paragraph
+                content:
+                  - type: text
+                    text: "📦 Repositório: "
+                  - type: text
+                    text: "${{ parameters.sigla | lower }}_cd_gitops-${{ parameters.platform }}"
+                    marks:
+                      - type: code
+              - type: paragraph
+                content:
+                  - type: text
+                    text: "🔗 URL: "
+                  - type: text
+                    text: "${{ steps.publish.output.remoteUrl }}"
+                    marks:
+                      - type: link
+                        attrs:
+                          href: "${{ steps.publish.output.remoteUrl }}"
+              - type: paragraph
+                content:
+                  - type: text
+                    text: "🚀 Plataforma: "
+                  - type: text
+                    text: "{%- if parameters.platform == 'lbd' %}AWS Lambda{% elif parameters.platform == 'eks' %}AWS EKS{% else %}Azure AKS{% endif %}"
+                    marks:
+                      - type: strong
+              - type: paragraph
+                content:
+                  - type: text
+                    text: "🌍 Ambientes configurados: "
+                  - type: text
+                    text: "${{ parameters.environments | join(', ') | upper }}"
+              - type: paragraph
+                content:
+                  - type: text
+                    text: "\n📝 Próximo passo: Criar aplicações usando o template 'Python FastAPI Application' e referenciar este repo GitOps."
+                    marks:
+                      - type: em
+    
+    - id: jira-transition
+      name: Close JIRA Ticket
+      action: http:backstage:request
+      input:
+        method: POST
+        url: https://devopstia.atlassian.net/rest/api/3/issue/${{ parameters.jiraTicket }}/transitions
+        headers:
+          Authorization: Basic ${{ secrets.JIRA_AUTH_TOKEN }}
+          Content-Type: application/json
+        body:
+          transition:
+            id: "31"
 
   output:
     links:
@@ -152,5 +224,5 @@ spec:
       - title: Open in Catalog
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
-      - title: JIRA Ticket
+      - title: JIRA Ticket (✅ Closed)
         url: https://devopstia.atlassian.net/browse/${{ parameters.jiraTicket }}
