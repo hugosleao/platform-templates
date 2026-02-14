@@ -5,8 +5,9 @@ ${{ values.description }}
 ## 🏗️ Arquitetura
 
 - **Sigla**: `${{ values.sigla }}`
-- **Tipo Repo**: `${{ values.repoType }}` (APP/QA/CD)
-- **Pipeline**: `${{ values.tipo }}`
+- **App Name**: `${{ values.appName }}`
+- **GitOps Repo**: `${{ values.gitopsRepo }}`
+- **Ambientes**: ${{ values.environments | join(', ') }}
 - **Owner**: `${{ values.owner }}`
 - **JIRA**: [${{ values.jiraTicket }}](https://devopstia.atlassian.net/browse/${{ values.jiraTicket }})
 
@@ -31,7 +32,25 @@ ${{ values.appName }}/
         └── pipeline.yml # GitHub Actions
 ```
 
-## 🔄 GitFlow
+## 🔄 GitFlow & GitOps
+
+### Branches
+- `develop` → Deploy DEV
+- `release` → Deploy HML
+- `main` → Deploy PRD
+
+### Fluxo CI/CD
+1. **Push** → GitHub Actions (CI)
+2. **Build** → Docker image + push GHCR
+3. **GitOps** → Commit em `${{ values.gitopsRepo }}`
+4. **ArgoCD** → Sync automático no EKS
+
+## 📝 Configuração `.pipeline.yaml`
+
+Ambientes configurados:
+{%- for env in values.environments %}
+- **{{ env | upper }}**: Account ID definido no GitOps
+{%- endfor %}
 
 - `develop` → Ambiente de Desenvolvimento (DEV)
 - `release` → Ambiente de Homologação (HML)

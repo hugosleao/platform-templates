@@ -1,0 +1,4 @@
+# GitOps Configuration
+gitops_repository: ${{ values.gitopsRepo }}
+environments: ${{ values.environments | join(',') }}
+argocd_app: ${{ values.sigla | lower }}-${{ values.appName }}

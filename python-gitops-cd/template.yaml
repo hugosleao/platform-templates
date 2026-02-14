@@ -1,20 +1,20 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: python-fastapi-app
-  title: Python FastAPI Application (CI)
-  description: Cria aplicação Python FastAPI com CI/CD (requer repo GitOps CD existente)
+  name: python-gitops-cd
+  title: Python GitOps CD (Manifests Helm)
+  description: Cria repositório GitOps com manifests Helm para deploy via ArgoCD
   tags:
-    - python
-    - fastapi
-    - api
-    - ci
+    - gitops
+    - helm
+    - argocd
+    - cd
 spec:
   owner: platform-team
   type: service
 
   parameters:
-    - title: Informações da Aplicação
+    - title: Informações do GitOps
       required:
         - sigla
         - appName
@@ -38,7 +38,7 @@ spec:
         description:
           title: Descrição
           type: string
-          description: Descrição breve da aplicação
+          description: Descrição breve do projeto
         
         owner:
           title: Owner
@@ -49,29 +49,14 @@ spec:
             catalogFilter:
               kind: [Group, User]
     
-    - title: Configuração GitOps
+    - title: Configuração de Ambientes
       required:
-        - gitopsRepo
         - environments
       properties:
-        gitopsRepo:
-          title: Repositório GitOps (CD)
-          type: string
-          description: Nome do repositório CD criado previamente
-          pattern: '^[a-z0-9_-]+_cd_[a-z0-9-]+$'
-          ui:help: Formato esperado {sigla}_cd_{appName}
-        
-        repositoryName:
-          title: Nome do Repositório APP (Preview)
-          type: string
-          description: Será criado automaticamente
-          ui:readonly: true
-          ui:help: Formato {sigla}_app_{appName}
-        
         environments:
-          title: Ambientes para Deploy
+          title: Ambientes AWS
           type: array
-          description: Ambientes configurados no repo GitOps
+          description: Selecione os ambientes que terão deploy
           uniqueItems: true
           ui:widget: checkboxes
           items:
@@ -81,6 +66,13 @@ spec:
               - hml
               - prd
           default: ['dev']
+        
+        repositoryName:
+          title: Nome do Repositório (Preview)
+          type: string
+          description: Será criado automaticamente
+          ui:readonly: true
+          ui:help: Formato {sigla}_cd_{appName}
     
     - title: Configuração GitHub
       required:
@@ -116,12 +108,10 @@ spec:
         values:
           sigla: ${{ parameters.sigla }}
           appName: ${{ parameters.appName }}
-          repositoryName: ${{ parameters.sigla | lower }}_app_${{ parameters.appName }}
-          gitopsRepo: ${{ parameters.gitopsRepo }}
-          environments: ${{ parameters.environments }}
+          repositoryName: ${{ parameters.sigla | lower }}_cd_${{ parameters.appName }}
           description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
-          repoUrl: ${{ parameters.repoUrl }}
+          environments: ${{ parameters.environments }}
           jiraTicket: ${{ parameters.jiraTicket }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
@@ -133,21 +123,11 @@ spec:
         description: ${{ parameters.description }}
         repoUrl: ${{ parameters.repoUrl }}
         repoVisibility: private
-        defaultBranch: develop
+        defaultBranch: main
         protectDefaultBranch: false
         deleteBranchOnMerge: true
         gitAuthorName: Backstage
         gitAuthorEmail: backstage@devopstia.com
-
-    - id: create-secrets
-      name: Create GitHub Secrets
-      action: github:webhook
-      input:
-        repoUrl: ${{ parameters.repoUrl }}
-        webhookUrl: https://api.github.com/repos/${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}/${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}/actions/secrets
-        events: []
-        active: false
-        secret: dummy
         
     - id: register
       name: Register Component
