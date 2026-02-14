@@ -32,9 +32,9 @@ spec:
         appName:
           title: Nome da Aplicação
           type: string
-          description: Nome completo da aplicação
-          pattern: '^[a-z][a-z0-9-]*(?<!-dev)(?<!-hml)(?<!-ppr)(?<!-prd)$'
-          ui:help: Sem sufixo de ambiente (-dev, -hml, -prd)
+          description: Nome completo da aplicação sem sufixo de ambiente
+          pattern: '^(?!.*-(dev|hml|ppr|prd)$)[a-z][a-z0-9-]*$'
+          ui:help: Proibido terminar com -dev, -hml, -ppr ou -prd
         
         tipo:
           title: Tipo de Pipeline
