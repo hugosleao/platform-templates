@@ -59,14 +59,15 @@ spec:
           type: string
           description: Nome do repositório CD criado previamente
           pattern: '^[a-z0-9_-]+_cd_[a-z0-9-]+$'
-          ui:help: Formato esperado {sigla}_cd_{appName}
+          ui:help: Formato esperado {sigla}_cd_{appName} (ex xpto_cd_gitops-lbd)
         
-        repositoryName:
-          title: Nome do Repositório APP (Preview)
+        repositoryPreview:
+          title: 📦 Repositório APP que será criado
           type: string
-          description: Será criado automaticamente
+          description: Baseado nos campos acima
           ui:readonly: true
-          ui:help: Formato {sigla}_app_{appName}
+          ui:help: Será criado como [SIGLA]_app_[NOME-APP] (ex XPTO + teste-api → xpto_app_teste-api)
+          default: Preencha os campos acima para visualizar
         
         environments:
           title: Ambientes para Deploy

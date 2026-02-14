@@ -67,12 +67,13 @@ spec:
               - prd
           default: ['dev']
         
-        repositoryName:
-          title: Nome do Repositório (Preview)
+        repositoryPreview:
+          title: 📦 Repositório que será criado
           type: string
-          description: Será criado automaticamente
+          description: Baseado nos campos acima
           ui:readonly: true
-          ui:help: Formato {sigla}_cd_{appName}
+          ui:help: Será criado como [SIGLA]_cd_[NOME-APP] (ex XPTO_cd_gitops-lbd → xpto_cd_gitops-lbd)
+          default: Preencha os campos acima para visualizar
     
     - title: Configuração GitHub
       required:
