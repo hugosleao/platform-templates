@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+      - release
+      - main
+  pull_request:
+    branches:
+      - develop
+      - release
+      - main
+
+env:
+  SIGLA: ${{ values.sigla }}
+  APP_NAME: ${{ values.appName }}
+
+jobs:
+  ci:
+    name: CI - Build & Test
+    uses: hugosleao/dvsp_workflows_python/.github/workflows/ci.yml@main
+    with:
+      python-version: '3.12'
+      sigla: ${{ values.sigla }}
+      app-name: ${{ values.appName }}
+    secrets:
+      JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      JIRA_URL: ${{ secrets.JIRA_URL }}
+      TOKEN_SVC_ACTIONS: ${{ secrets.TOKEN_SVC_ACTIONS }}
+
+  cd:
+    name: CD - Deploy
+    needs: ci
+    if: github.event_name == 'push'
+    uses: hugosleao/dvsp_workflows_python/.github/workflows/cd.yml@main
+    with:
+      sigla: ${{ values.sigla }}
+      app-name: ${{ values.appName }}
+      branch: ${{ github.ref_name }}
+    secrets:
+      TOKEN_SVC_ACTIONS: ${{ secrets.TOKEN_SVC_ACTIONS }}

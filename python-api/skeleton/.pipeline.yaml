@@ -1,0 +1,23 @@
+app:
+  version: "0.1.0"
+
+zip:
+  files:
+    - "*.py"
+    - "requirements.txt"
+    - "Dockerfile"
+  directories:
+    - "app"
+
+# Configuração de Ambientes
+DEV:
+  account_id: '259175803102'
+  region: us-east-1
+
+HML:
+  account_id: '493385093101'
+  region: us-east-1
+
+PRD:
+  account_id: '924146895830'
+  region: sa-east-1

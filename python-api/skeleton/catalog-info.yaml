@@ -1,0 +1,29 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.appName }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
+    backstage.io/techdocs-ref: dir:.
+    argocd/app-name: ${{ values.sigla | lower }}-${{ values.appName }}
+    jira/project-key: ${{ values.jiraTicket | replace('-.*', '') }}
+  tags:
+    - python
+    - fastapi
+    - ${{ values.sigla | lower }}
+  links:
+    - url: https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}
+      title: GitHub Repository
+      icon: github
+    - url: https://argocd.devopstia.com/applications/${{ values.sigla | lower }}-${{ values.appName }}
+      title: ArgoCD Application
+      icon: dashboard
+    - url: https://devopstia.atlassian.net/browse/${{ values.jiraTicket }}
+      title: JIRA Ticket
+      icon: docs
+spec:
+  type: service
+  lifecycle: production
+  owner: ${{ values.owner }}
+  system: ${{ values.sigla | lower }}-platform

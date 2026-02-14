@@ -1,0 +1,144 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: python-fastapi-app
+  title: Python FastAPI Application
+  description: Cria uma aplicação Python FastAPI com CI/CD completo (GitHub Actions + ArgoCD + GitOps)
+  tags:
+    - python
+    - fastapi
+    - api
+    - microservice
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+    - title: Informações da Aplicação
+      required:
+        - sigla
+        - appName
+        - tipo
+        - owner
+      properties:
+        sigla:
+          title: Sigla da Aplicação
+          type: string
+          description: Sigla única da aplicação (ex: DVSP, CORE, PAGTO)
+          pattern: '^[A-Z]{3,6}$'
+          ui:autofocus: true
+          ui:help: 'Máximo 6 caracteres maiúsculos'
+        
+        appName:
+          title: Nome da Aplicação
+          type: string
+          description: Nome completo da aplicação (ex: payment-service, user-api)
+          pattern: '^[a-z][a-z0-9-]*$'
+          ui:help: 'Apenas letras minúsculas, números e hífens'
+        
+        tipo:
+          title: Tipo de Pipeline
+          type: string
+          description: Tipo de pipeline CI/CD
+          default: GitOps
+          enum:
+            - GitOps
+            - Aplicação de Teste
+          enumNames:
+            - 'GitOps (Deploy via ArgoCD)'
+            - 'Aplicação de Teste (Somente CI)'
+        
+        description:
+          title: Descrição
+          type: string
+          description: Descrição breve da aplicação
+        
+        owner:
+          title: Owner
+          type: string
+          description: Time ou pessoa responsável
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: [Group, User]
+    
+    - title: Configuração do Repositório
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - hugosleao
+    
+    - title: JIRA Integration
+      required:
+        - jiraTicket
+      properties:
+        jiraTicket:
+          title: Número do Ticket JIRA
+          type: string
+          description: Ticket JIRA que solicitou esta aplicação (ex: DEVOPS-123)
+          pattern: '^[A-Z]+-[0-9]+$'
+          ui:help: 'Formato: PROJETO-NUMERO'
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          sigla: ${{ parameters.sigla }}
+          appName: ${{ parameters.appName }}
+          tipo: ${{ parameters.tipo }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          repoUrl: ${{ parameters.repoUrl }}
+          jiraTicket: ${{ parameters.jiraTicket }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: develop
+        protectDefaultBranch: false
+        deleteBranchOnMerge: true
+        gitAuthorName: Backstage
+        gitAuthorEmail: backstage@devopstia.com
+
+    - id: create-secrets
+      name: Create GitHub Secrets
+      action: github:webhook
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        webhookUrl: https://api.github.com/repos/${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}/${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}/actions/secrets
+        events: []
+        active: false
+        secret: dummy
+        
+    - id: register
+      name: Register Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
+      - title: JIRA Ticket
+        url: https://devopstia.atlassian.net/browse/${{ parameters.jiraTicket }}
